@@ -1,0 +1,300 @@
+<div class="container p-5">
+  <form [formGroup]="analyticalForm" (ngSubmit)="onSubmit()">
+    <div class="form-group required">
+      <label>
+        Analytical Method ID
+      </label>
+      <input type="text" class="form-control" formControlName="analytical_method_id" [ngClass]="{ 'error': submitted && _form?.analytical_method_id?.errors}">
+    </div>
+    <div class="form-group required">
+      <label>
+        Target Residue Type:
+      </label>
+      <div class="form-group dropdown">
+        <input class="dropdown-toggle form-control w-100" type="text" formControlName="target_residue_type" id="dropdownMenuButton" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" [ngClass]="{ 'error': submitted && _form?.target_residue_type?.errors}">
+        <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" *ngFor="let item of substances" (click)="selectedSubstanceFunc(item)">{{item}}</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group" formGroupName="type_one">
+      <div class="form-group">
+        <div class="row" *ngIf="selectedSubstance == 'API' || selectedSubstance == 'Cleaning Agent'">
+          <div class="form-group col required">
+            <label>LOD (in ppm)</label>
+            <input formControlName="LOD" class="form-control" [ngClass]="{ 'error': submitted && _form_type_one?.LOD?.errors}">
+          </div>
+          <div class="form-group col required">
+            <label>LOQ (in ppm)</label>
+            <input formControlName="LOQ" class="form-control" [ngClass]="{ 'error': submitted && _form_type_one?.LOQ?.errors}">
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedSubstance && (selectedSubstance == 'API' || selectedSubstance == 'Cleaning Agent')">
+        <div *ngIf="!isSwabSamplingConfig" (click)="swabSamplingConfig()"
+          class="form-group form-control text-center border-primary" style="border-style:solid;">
+          <span class="fa-stack fa-1x">
+            <i class="far fa-circle fa-stack-2x icon-background6"></i>
+            <i class="fa fa-plus icon-background6"></i>
+          </span>
+          <label class="text-primary">Configure Swab Sampling Parameters</label>
+        </div>
+        <div *ngIf="isSwabSamplingConfig" (click)="swabSamplingConfig()"
+          class="form-group form-control text-center border-danger" style="border-style:solid;">
+          <label class="text-danger">Remove Swab Sampling Parameters</label>
+        </div>
+        <div *ngIf="isSwabSamplingConfig" class="form-group border p-4" formGroupName="swab_sampling_params">
+          <div class="form-group required">
+            <label>
+              Method Used
+            </label>
+            <input type="text" class="form-control" formControlName="method_used" [ngClass]="{ 'error': submitted && _form_type_one?.swab_sampling_params?.controls?.method_used?.errors}">
+          </div>
+
+          <div class="row">
+            <div class="form-group col required">
+              <label>
+                Solvent Name
+              </label>
+              <input type="text" class="form-control" formControlName="solvent_name" [ngClass]="{ 'error': submitted && _form_type_one?.swab_sampling_params?.controls?.solvent_name?.errors}">
+            </div>
+            <div class="form-group col required">
+              <label>
+                Solvent Quantity
+              </label>
+              <input type="text" class="form-control" formControlName="solvent_quantity" [ngClass]="{ 'error': submitted && _form_type_one?.swab_sampling_params?.controls?.solvent_quantity?.errors}">
+            </div>
+          </div>
+
+
+          <div class="form-group required">
+            <label>
+              Default Recovery (%)
+            </label>
+            <input type="text" class="form-control" formControlName="default_recovery" [ngClass]="{ 'error': submitted && _form_type_one?.swab_sampling_params?.controls?.default_recovery?.errors}">
+          </div>
+          <div class="form-group form-control text-center border-primary" style="border-style:solid;">
+            <span class="fa-stack fa-1x">
+              <i class="far fa-circle fa-stack-2x icon-background6"></i>
+              <i class="fa fa-plus icon-background6"></i>
+            </span>
+            <label class="text-primary">Add MOC</label>
+          </div>
+        </div>
+
+        <div *ngIf="!isRinseSamplingConfig" (click)="rinseSamplingConfig()"
+          class="form-group form-control text-center border-primary" style="border-style:solid;">
+          <span class="fa-stack fa-1x">
+            <i class="far fa-circle fa-stack-2x icon-background6"></i>
+            <i class="fa fa-plus icon-background6"></i>
+          </span>
+          <label class="text-primary">Configure Rinse Sampling Parameters</label>
+        </div>
+        <div *ngIf="isRinseSamplingConfig" (click)="rinseSamplingConfig()"
+          class="form-group form-control text-center border-danger" style="border-style:solid;">
+          <label class="text-danger">Remove Rinse Sampling Parameters</label>
+        </div>
+
+        <div *ngIf="isRinseSamplingConfig" class="form-group border p-4" formGroupName="rinse_sampling_params">
+          <div class="form-group required">
+            <label>
+              Method Used
+            </label>
+            <input type="text" class="form-control" formControlName="method_used" [ngClass]="{ 'error': submitted && _form_type_one?.rinse_sampling_params?.controls?.method_used?.errors}">
+          </div>
+
+          <div class="form-group required">
+            <label>
+              Default Recovery (%)
+            </label>
+            <input type="text" class="form-control" formControlName="default_recovery" [ngClass]="{ 'error': submitted && _form_type_one?.rinse_sampling_params?.controls?.default_recovery?.errors}">
+          </div>
+          <div class="form-group form-control text-center border-primary" style="border-style:solid;">
+            <span class="fa-stack fa-1x">
+              <i class="far fa-circle fa-stack-2x icon-background6"></i>
+              <i class="fa fa-plus icon-background6"></i>
+            </span>
+            <label class="text-primary">Add MOC</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" formGroupName="type_two">
+        <div class="form-group">
+          <div *ngIf="selectedSubstance == 'Bioburden' || selectedSubstance == 'Endotoxin'">
+            <div class="form-group">
+              <label>Method Used</label>
+              <input formControlName="method_used" class="form-control" [ngClass]="{ 'error': submitted && _form_type_two?.method_used?.errors}">
+            </div>
+            <div class="form-group">
+              <label>Define TNTC and TFTC Limits?</label>
+              <div class="row px-4">
+                <div class="col-1">
+                  <input class="form-check-input" type="radio" value="yes" (click)="isLimits(true)"
+                    [checked]="isTNTC_TFTC_limits">
+                  <label class="form-check-label">
+                    Yes
+                  </label>
+                </div>
+                <div class="col-1">
+                  <input class="form-check-input" type="radio" value="no" (click)="isLimits(false)"
+                    [checked]="!isTNTC_TFTC_limits">
+                  <label class="form-check-label">
+                    No
+                  </label>
+                </div>
+  
+              </div>
+  
+            </div>
+            <div *ngIf="isTNTC_TFTC_limits" class="row" formGroupName="set_limits">
+              <div class="form-group col">
+                <label>TNTC Limit (in CFU)</label>
+                <input formControlName="TNTC" class="form-control" [ngClass]="{ 'error': submitted && _form_type_two?.set_limits?.controls?.TNTC?.errors}">
+              </div>
+              <div class="form-group col">
+                <label>TFTC Limit (in CFU)</label>
+                <input formControlName="TFTC" class="form-control" [ngClass]="{ 'error': submitted && _form_type_two?.set_limits?.controls?.TFTC?.errors}">
+              </div>
+            </div>
+  
+  
+          </div>
+        </div>
+
+        <div *ngIf="selectedSubstance && (selectedSubstance == 'Bioburden' || selectedSubstance == 'Endotoxin')">
+            <div *ngIf="!isSwabSamplingConfig" (click)="swabSamplingConfig()"
+              class="form-group form-control text-center border-primary" style="border-style:solid;">
+              <span class="fa-stack fa-1x">
+                <i class="far fa-circle fa-stack-2x icon-background6"></i>
+                <i class="fa fa-plus icon-background6"></i>
+              </span>
+              <label class="text-primary">Configure Swab Sampling Parameters</label>
+            </div>
+            <div *ngIf="isSwabSamplingConfig" (click)="swabSamplingConfig()"
+              class="form-group form-control text-center border-danger" style="border-style:solid;">
+              <label class="text-danger">Remove Swab Sampling Parameters</label>
+            </div>
+            <div *ngIf="isSwabSamplingConfig" class="form-group border p-4" formGroupName="swab_sampling_params">
+              <div class="row">
+                <div class="form-group col required">
+                  <label>
+                    Use Recovery for Swab?
+                  </label>
+                  <div class="row px-4">
+                    <div class="col-2">
+                      <input class="form-check-input" type="radio" formControlName="use_recovery_for_swab" value="yes" checked [ngClass]="{ 'error': submitted && _form_type_two?.swab_sampling_params?.controls?.use_recovery_for_swab?.errors}">
+                      <label class="form-check-label">
+                        Yes
+                      </label>
+                    </div>
+                    <div class="col-1">
+                      <input class="form-check-input" type="radio" formControlName="use_recovery_for_swab" value="no" [ngClass]="{ 'error': submitted && _form_type_two?.swab_sampling_params?.controls?.use_recovery_for_swab?.errors}">
+                      <label class="form-check-label">
+                        No
+                      </label>
+                    </div>
+      
+                  </div>
+                </div>
+      
+                <div class="form-group col required">
+                  <label>
+                    Default Recovery (%)
+                  </label>
+                  <input type="text" class="form-control" formControlName="default_recovery" [ngClass]="{ 'error': submitted && _form_type_two?.swab_sampling_params?.controls?.default_recovery?.errors}">
+                </div>
+              </div>
+      
+      
+      
+              <div class="form-group form-control text-center border-primary" style="border-style:solid;">
+                <span class="fa-stack fa-1x">
+                  <i class="far fa-circle fa-stack-2x icon-background6"></i>
+                  <i class="fa fa-plus icon-background6"></i>
+                </span>
+                <label class="text-primary">Add MOC</label>
+              </div>
+            </div>
+      
+            <div *ngIf="!isRinseSamplingConfig" (click)="rinseSamplingConfig()"
+              class="form-group form-control text-center border-primary" style="border-style:solid;">
+              <span class="fa-stack fa-1x">
+                <i class="far fa-circle fa-stack-2x icon-background6"></i>
+                <i class="fa fa-plus icon-background6"></i>
+              </span>
+              <label class="text-primary">Configure Rinse Sampling Parameters</label>
+            </div>
+            <div *ngIf="isRinseSamplingConfig" (click)="rinseSamplingConfig()"
+              class="form-group form-control text-center border-danger" style="border-style:solid;">
+              <label class="text-danger">Remove Rinse Sampling Parameters</label>
+            </div>
+      
+            <div *ngIf="isRinseSamplingConfig" class="form-group border p-4" formGroupName="rinse_sampling_params">
+              <div class="form-group required">
+                <label>
+                  Solvent Volume
+                </label>
+                <input type="text" class="form-control" formControlName="solvent_volume" [ngClass]="{ 'error': submitted && _form_type_two?.rinse_sampling_params?.controls?.solvent_volume?.errors}">
+              </div>
+      
+              <div class="row">
+                <div class="form-group col required">
+                  <label>
+                    Use Recovery for Swab?
+                  </label>
+                  <div class="row px-4">
+                    <div class="col-2">
+                      <input class="form-check-input" type="radio" formControlName="use_recovery_for_swab" value="yes" checked [ngClass]="{ 'error': submitted && _form_type_two?.rinse_sampling_params?.controls?.use_recovery_for_swab?.errors}">
+                      <label class="form-check-label">
+                        Yes
+                      </label>
+                    </div>
+                    <div class="col-1">
+                      <input class="form-check-input" type="radio" formControlName="use_recovery_for_swab" value="no" [ngClass]="{ 'error': submitted && _form_type_two?.rinse_sampling_params?.controls?.use_recovery_for_swab?.errors}">
+                      <label class="form-check-label">
+                        No
+                      </label>
+                    </div>
+      
+                  </div>
+                </div>
+      
+                <div class="form-group col required">
+                  <label>
+                    Default Recovery (%)
+                  </label> 
+                  <input type="text" class="form-control" formControlName="default_recovery" [ngClass]="{ 'error': submitted && _form_type_two?.rinse_sampling_params?.controls?.default_recovery?.errors}">
+                </div>
+              </div>
+              <div class="form-group form-control text-center border-primary" style="border-style:solid;">
+                <span class="fa-stack fa-1x">
+                  <i class="far fa-circle fa-stack-2x icon-background6"></i>
+                  <i class="fa fa-plus icon-background6"></i>
+                </span>
+                <label class="text-primary">Add MOC</label>
+              </div>
+            </div>
+          </div>
+    </div>
+
+
+
+
+    
+
+    <div class="form-group required">
+      <label>
+        Reason
+      </label>
+      <input type="text" class="form-control" formControlName="reason" [ngClass]="{ 'error': submitted && _form?.reason?.errors}">
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+</div>
